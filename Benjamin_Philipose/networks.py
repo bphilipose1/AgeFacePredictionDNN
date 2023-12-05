@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-'''
+
 class LinearRegression(nn.Module):
     def __init__(self, input_size):
         super(LinearRegression, self).__init__()
@@ -10,7 +10,7 @@ class LinearRegression(nn.Module):
     def forward(self, x):
         # Forward pass through the linear layer
         return self.linear(x)
-'''
+
 class CNNRegression(nn.Module):
     def __init__(self):
         super(CNNRegression, self).__init__()
@@ -55,7 +55,7 @@ class CNNRegression(nn.Module):
 
         return x
     
-'''
+
 class MultimodalNetwork(nn.Module):
     def __init__(self, cnn_model, num_numerical_features):
         super(MultimodalNetwork, self).__init__()
@@ -75,4 +75,4 @@ class MultimodalNetwork(nn.Module):
         
         # Generate the final output
         output = self.final_fc(combined_features)
-        return output'''
+        return output
