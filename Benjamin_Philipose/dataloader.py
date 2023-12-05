@@ -25,15 +25,6 @@ class CustomDataloader():
         img_batch = np.array([self.process_image(path) for path in batch_image_paths], dtype=np.float32)
         return img_batch
 
-    def fetch_batch(self):
-        if self.iter is None:
-            self.generate_iter()
-
-        batch = next(self.iter, None)
-        if batch is not None and batch['batch_idx'] == self.num_batches_per_epoch - 1:
-            self.generate_iter()
-
-        return batch
 
     def generate_iter(self):
         if self.randomize:
@@ -45,6 +36,9 @@ class CustomDataloader():
         self.iter = iter([(i*self.batch_size, (i+1)*self.batch_size) for i in range(self.num_batches_per_epoch)])
 
     def fetch_batch(self):
+        if self.iter is None:
+            self.generate_iter()
+
         batch_indices = next(self.iter, None)
         if batch_indices is None:
             return None
