@@ -7,6 +7,7 @@ class CustomDataloader():
     def __init__(self, dataframe, age, batch_size=1, randomize=False):
         self.dataframe = dataframe
         self.age = age
+        self.iter = None
         self.batch_size = batch_size
         self.randomize = randomize
         self.num_batches_per_epoch = math.ceil(len(self.dataframe) / self.batch_size)
