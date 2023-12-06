@@ -8,5 +8,5 @@ ex: cd path/project_folder
 ## 3. C
 \$ .\venv\Scripts\activate
 ## 5. Install the required packages:
-\$ pip install --upgrade pip
+\$ python.exe -m pip install --upgrade pip
 \$ pip install -r requirements.txt
