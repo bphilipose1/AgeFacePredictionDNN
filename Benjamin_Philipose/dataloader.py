@@ -51,5 +51,4 @@ class CustomDataloader():
 
         if batch_indices[1] >= len(self.dataframe):
             self.generate_iter()  # Reset for the next epoch
-
         return {'img_batch': img_batch, 'feat_batch': feat_batch, 'age_batch': age_batch, 'batch_idx': start_idx // self.batch_size}

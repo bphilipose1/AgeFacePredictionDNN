@@ -14,7 +14,14 @@ def save_checkpoint(model, optimizer, epoch, filename):
         'optimizer_state_dict': optimizer.state_dict()
     }
     torch.save(checkpoint, filename)
-    
+
+def load_checkpoint(filepath, model, optimizer):
+    checkpoint = torch.load(filepath)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch = checkpoint['epoch']
+    return model, optimizer, epoch
+
 # Loss function
 def mean_squared_error(x : np.ndarray, y : np.ndarray, theta : np.ndarray) -> np.ndarray:
     yhat = x @ theta 
@@ -37,7 +44,7 @@ def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
         batch = dataloader.fetch_batch()
         x_batch = batch['img_batch'].to(device)
         y_batch = batch['age_batch'].to(device)
-        yhat = torch.squeeze(model(x_batch))
+        yhat = torch.squeeze(model(x_batch), 1)
         loss = torch.mean(loss_fn(yhat, y_batch))
         loss.backward()
         optimizer.step()
@@ -52,7 +59,7 @@ def cnn_val_step(model, dataloader, loss_fn, device):
             batch = dataloader.fetch_batch()
             x_batch = batch['img_batch'].to(device)
             y_batch = batch['age_batch'].to(device)
-            yhat = torch.squeeze(model(x_batch))
+            yhat = torch.squeeze(model(x_batch), 1)
             loss = loss_fn(yhat, y_batch)
             losses.append(loss.item())
     return np.mean(losses)
@@ -69,7 +76,7 @@ def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
         y_batch = batch['age_batch'].to(device)
 
         yhat = model(x_batch, num_features)
-        yhat = torch.squeeze(yhat)
+        yhat = torch.squeeze(yhat, 1)
         loss = loss_fn(yhat, y_batch)
         loss.backward()
         optimizer.step()
@@ -87,7 +94,7 @@ def mmn_val_step(model, dataloader, loss_fn, device):
             y_batch = batch['age_batch'].to(device)
 
             yhat = model(x_batch, num_features)
-            yhat = torch.squeeze(yhat)
+            yhat = torch.squeeze(yhat, 1)
             loss = loss_fn(yhat, y_batch)
             losses.append(loss.item())
     return np.mean(losses)
