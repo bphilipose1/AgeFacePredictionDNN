@@ -14,8 +14,6 @@ class CustomDataloader():
 
     def process_image(self, img_path):
         with Image.open(img_path) as img:
-            img = img.convert('L')  # Convert to grayscale
-            img = img.resize((64, 64))  # Resize
             img_array = np.asarray(img) / 255.0  # Normalize
             img_array = np.expand_dims(img_array, axis=0)  # Add channel dimension
         return img_array
