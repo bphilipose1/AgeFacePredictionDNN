@@ -7,14 +7,13 @@ class CustomDataloader():
     def __init__(self, dataframe, age, batch_size=1, randomize=False):
         self.dataframe = dataframe
         self.age = age
+        self.iter = None
         self.batch_size = batch_size
         self.randomize = randomize
         self.num_batches_per_epoch = math.ceil(len(self.dataframe) / self.batch_size)
 
     def process_image(self, img_path):
         with Image.open(img_path) as img:
-            img = img.convert('L')  # Convert to grayscale
-            img = img.resize((64, 64))  # Resize
             img_array = np.asarray(img) / 255.0  # Normalize
             img_array = np.expand_dims(img_array, axis=0)  # Add channel dimension
         return img_array
@@ -24,15 +23,6 @@ class CustomDataloader():
         img_batch = np.array([self.process_image(path) for path in batch_image_paths], dtype=np.float32)
         return img_batch
 
-    def fetch_batch(self):
-        if self.iter is None:
-            self.generate_iter()
-
-        batch = next(self.iter, None)
-        if batch is not None and batch['batch_idx'] == self.num_batches_per_epoch - 1:
-            self.generate_iter()
-
-        return batch
 
     def generate_iter(self):
         if self.randomize:
@@ -44,6 +34,9 @@ class CustomDataloader():
         self.iter = iter([(i*self.batch_size, (i+1)*self.batch_size) for i in range(self.num_batches_per_epoch)])
 
     def fetch_batch(self):
+        if self.iter is None:
+            self.generate_iter()
+
         batch_indices = next(self.iter, None)
         if batch_indices is None:
             return None
