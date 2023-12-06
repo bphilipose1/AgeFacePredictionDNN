@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import torch
 from PIL import Image
@@ -12,17 +11,16 @@ class CustomDataloader():
         self.randomize = randomize
         self.num_batches_per_epoch = math.ceil(len(self.dataframe) / self.batch_size)
 
-    def process_image(self, img_path):
+    def process_image_numerical(self, img_path):
         with Image.open(img_path) as img:
-            img_array = np.asarray(img) / 255.0  # Normalize
-            img_array = np.expand_dims(img_array, axis=0)  # Add channel dimension
+            img_array = np.asarray(img) / 255.0
+            img_array = np.expand_dims(img_array, axis=0)
         return img_array
 
     def load_batch_images(self, start_idx, end_idx):
         batch_image_paths = self.dataframe['filename'].iloc[start_idx:end_idx]
-        img_batch = np.array([self.process_image(path) for path in batch_image_paths], dtype=np.float32)
+        img_batch = np.array([self.process_image_numerical(path) for path in batch_image_paths], dtype=np.float32)
         return img_batch
-
 
     def generate_iter(self):
         if self.randomize:
