@@ -56,3 +56,38 @@ def cnn_val_step(model, dataloader, loss_fn, device):
             loss = loss_fn(yhat, y_batch)
             losses.append(loss.item())
     return np.mean(losses)
+
+
+def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
+    model.train()  # Set the model to training mode
+    losses = []
+    for _ in range(dataloader.num_batches_per_epoch):
+        optimizer.zero_grad()
+        batch = dataloader.fetch_batch()
+        x_batch = batch['img_batch'].to(device)
+        num_features = batch['feat_batch'].to(device)
+        y_batch = batch['age_batch'].to(device)
+
+        yhat = model(x_batch, num_features)
+        yhat = torch.squeeze(yhat)
+        loss = loss_fn(yhat, y_batch)
+        loss.backward()
+        optimizer.step()
+        losses.append(loss.item())
+    return np.mean(losses)
+
+def mmn_val_step(model, dataloader, loss_fn, device):
+    model.eval()  # Set the model to evaluation mode
+    losses = []
+    with torch.no_grad():
+        for _ in range(dataloader.num_batches_per_epoch):
+            batch = dataloader.fetch_batch()
+            x_batch = batch['img_batch'].to(device)
+            num_features = batch['feat_batch'].to(device)
+            y_batch = batch['age_batch'].to(device)
+
+            yhat = model(x_batch, num_features)
+            yhat = torch.squeeze(yhat)
+            loss = loss_fn(yhat, y_batch)
+            losses.append(loss.item())
+    return np.mean(losses)
