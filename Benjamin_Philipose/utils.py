@@ -33,7 +33,7 @@ def calculate_gradient_and_update(x: np.ndarray, y: np.ndarray, theta: np.ndarra
 
 def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
     model.train()
-    total_loss = 0
+    losses_per_iteration = []
     for _ in range(dataloader.num_batches_per_epoch):
         optimizer.zero_grad()
         batch = dataloader.fetch_batch()       
@@ -44,12 +44,12 @@ def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
         loss = loss_fn(yhat, y_batch)
         loss.backward()
         optimizer.step()
-        total_loss += loss.detach().cpu().item()
-    return total_loss / dataloader.num_batches_per_epoch
+        losses_per_iteration.append(loss.item())
+    return losses_per_iteration
 
 def cnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
-    total_loss = 0
+    losses_per_iteration = []
     with torch.no_grad():
         for _ in range(dataloader.num_batches_per_epoch):
             batch = dataloader.fetch_batch()           
@@ -58,8 +58,8 @@ def cnn_val_step(model, dataloader, loss_fn, device):
             yhat = model(x_batch)
             yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
             loss = loss_fn(yhat, y_batch)
-            total_loss += loss.item()
-    return total_loss / dataloader.num_batches_per_epoch
+            losses_per_iteration.append(loss.item())
+    return losses_per_iteration
 
 def cnn_test_step(model, dataloader, device):
     model.eval()  # Set the model to evaluation mode
@@ -99,7 +99,7 @@ def mmnn_train_step(model, dataloader, loss_fn, optimizer, device):
 
 def mmnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
-    total_loss = 0
+    losses_per_iteration = []
     with torch.no_grad():
         for _ in range(dataloader.num_batches_per_epoch):
             batch = dataloader.fetch_batch()
@@ -109,8 +109,8 @@ def mmnn_val_step(model, dataloader, loss_fn, device):
             yhat = model(x_batch, num_features)
             yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
             loss = loss_fn(yhat, y_batch)
-            total_loss += loss.item()
-    return total_loss / dataloader.num_batches_per_epoch
+            losses_per_iteration.append(loss.item())
+    return losses_per_iteration
 
 def mmnn_test_step(model, dataloader, device):
     model.eval()  # Set the model to evaluation mode
