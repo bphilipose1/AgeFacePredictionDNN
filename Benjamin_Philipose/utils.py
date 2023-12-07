@@ -74,7 +74,6 @@ def cnn_test_step(model, dataloader, device):
             y_batch = batch['age_batch'].to(device)
             yhat = model(x_batch)
             yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
-            
             predictions.extend(yhat.detach().cpu().numpy())
             actuals.extend(y_batch.detach().cpu().numpy())
     return predictions, actuals
