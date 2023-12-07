@@ -53,5 +53,6 @@ class CustomDataloader():
         age_batch = torch.tensor(age_batch, dtype=torch.float32)
         
         batch = {'img_batch': img_batch, 'feat_batch': feat_batch, 'age_batch': age_batch, 'batch_idx': start_idx // self.batch_size}
+        self.x+=1
         return batch
 

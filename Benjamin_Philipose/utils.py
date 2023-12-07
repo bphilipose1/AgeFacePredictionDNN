@@ -35,15 +35,9 @@ def calculate_gradient_and_update(x: np.ndarray, y: np.ndarray, theta: np.ndarra
 def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
     model.train()
     total_loss = 0
-    x = 0#remove
     for _ in range(dataloader.num_batches_per_epoch):
         optimizer.zero_grad()
-        batch = dataloader.fetch_batch()
-        
-        #print to makesure batch is not None
-        x+=1
-        print('Step_Train:',x, ": ", batch is not None)
-        
+        batch = dataloader.fetch_batch()       
         x_batch = batch['img_batch'].to(device)
         y_batch = batch['age_batch'].to(device)
         yhat = model(x_batch)
@@ -57,14 +51,9 @@ def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
 def cnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
     total_loss = 0
-    x=0#remove
     with torch.no_grad():
         for _ in range(dataloader.num_batches_per_epoch):
-            batch = dataloader.fetch_batch()
-            
-            x+=1
-            print('Step_Val:',x, ": ", batch is not None)
-            
+            batch = dataloader.fetch_batch()           
             x_batch = batch['img_batch'].to(device)
             y_batch = batch['age_batch'].to(device)
             yhat = model(x_batch)
