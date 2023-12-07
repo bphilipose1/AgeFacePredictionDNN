@@ -80,7 +80,7 @@ def cnn_test_step(model, dataloader, device):
 
 
 
-def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
+def mmnn_train_step(model, dataloader, loss_fn, optimizer, device):
     model.train()
     total_loss = 0
     for _ in range(dataloader.num_batches_per_epoch):
@@ -97,7 +97,7 @@ def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
         total_loss += loss.item()
     return total_loss / dataloader.num_batches_per_epoch
 
-def mmn_val_step(model, dataloader, loss_fn, device):
+def mmnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
     total_loss = 0
     with torch.no_grad():
@@ -112,7 +112,7 @@ def mmn_val_step(model, dataloader, loss_fn, device):
             total_loss += loss.item()
     return total_loss / dataloader.num_batches_per_epoch
 
-def mmn_test_step(model, dataloader, device):
+def mmnn_test_step(model, dataloader, device):
     model.eval()  # Set the model to evaluation mode
 
     predictions = []
