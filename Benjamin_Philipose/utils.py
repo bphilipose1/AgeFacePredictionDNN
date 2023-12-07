@@ -34,62 +34,65 @@ def calculate_gradient_and_update(x: np.ndarray, y: np.ndarray, theta: np.ndarra
 
 def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
     model.train()
-    losses = []
+    total_loss = 0
     for _ in range(dataloader.num_batches_per_epoch):
         optimizer.zero_grad()
         batch = dataloader.fetch_batch()
         x_batch = batch['img_batch'].to(device)
         y_batch = batch['age_batch'].to(device)
-        yhat = torch.squeeze(model(x_batch), 1)
-        loss = torch.mean(loss_fn(yhat, y_batch))
+        yhat = model(x_batch)
+        yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
+        loss = loss_fn(yhat, y_batch)
         loss.backward()
         optimizer.step()
-        losses.append(loss.detach().cpu().numpy())
-    return losses
+        total_loss += loss.detach().cpu().item()
+    return total_loss / dataloader.num_batches_per_epoch
 
 def cnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
-    losses = []
+    total_loss = 0
     with torch.no_grad():
         for _ in range(dataloader.num_batches_per_epoch):
             batch = dataloader.fetch_batch()
             x_batch = batch['img_batch'].to(device)
             y_batch = batch['age_batch'].to(device)
-            yhat = torch.squeeze(model(x_batch), 1)
+            yhat = model(x_batch)
+            yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
             loss = loss_fn(yhat, y_batch)
-            losses.append(loss.item())
-    return losses
+            total_loss += loss.item()
+    return total_loss / dataloader.num_batches_per_epoch
+
 
 
 def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
-    model.train()  # Set the model to training mode
-    losses = []
+    model.train()
+    total_loss = 0
     for _ in range(dataloader.num_batches_per_epoch):
         optimizer.zero_grad()
         batch = dataloader.fetch_batch()
         x_batch = batch['img_batch'].to(device)
         num_features = batch['feat_batch'].to(device)
         y_batch = batch['age_batch'].to(device)
-
         yhat = model(x_batch, num_features)
-        yhat = torch.squeeze(yhat, 1)
+        yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
         loss = loss_fn(yhat, y_batch)
         loss.backward()
         optimizer.step()
-        losses.append(loss.item())
-    return losses
+        total_loss += loss.item()
+    return total_loss / dataloader.num_batches_per_epoch
+
 def mmn_val_step(model, dataloader, loss_fn, device):
-    model.eval()  # Set the model to evaluation mode
-    losses = []
+    model.eval()
+    total_loss = 0
     with torch.no_grad():
         for _ in range(dataloader.num_batches_per_epoch):
             batch = dataloader.fetch_batch()
             x_batch = batch['img_batch'].to(device)
             num_features = batch['feat_batch'].to(device)
             y_batch = batch['age_batch'].to(device)
-
             yhat = model(x_batch, num_features)
-            yhat = torch.squeeze(yhat, 1)
+            yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
             loss = loss_fn(yhat, y_batch)
-            losses.append(loss.item())
-    return np.mean(losses)
+            total_loss += loss.item()
+    return total_loss / dataloader.num_batches_per_epoch
+
