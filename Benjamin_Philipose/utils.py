@@ -82,7 +82,7 @@ def cnn_test_step(model, dataloader, device):
 
 def mmnn_train_step(model, dataloader, loss_fn, optimizer, device):
     model.train()
-    total_loss = 0
+    losses_per_iteration = []
     for _ in range(dataloader.num_batches_per_epoch):
         optimizer.zero_grad()
         batch = dataloader.fetch_batch()
@@ -94,8 +94,8 @@ def mmnn_train_step(model, dataloader, loss_fn, optimizer, device):
         loss = loss_fn(yhat, y_batch)
         loss.backward()
         optimizer.step()
-        total_loss += loss.item()
-    return total_loss / dataloader.num_batches_per_epoch
+        losses_per_iteration.append(loss.item())
+    return losses_per_iteration
 
 def mmnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
