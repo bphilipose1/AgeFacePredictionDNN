@@ -11,12 +11,11 @@ def save_checkpoint(model, optimizer, epoch, filename):
     }
     torch.save(checkpoint, filename)
 
-def load_checkpoint(filepath, model, optimizer):
+def load_checkpoint(filepath, model):
     checkpoint = torch.load(filepath)
     model.load_state_dict(checkpoint['model_state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     epoch = checkpoint['epoch']
-    return model, optimizer, epoch
+    return model, epoch
 
 # Loss function
 def mean_squared_error(x : np.ndarray, y : np.ndarray, theta : np.ndarray) -> np.ndarray:
@@ -61,6 +60,24 @@ def cnn_val_step(model, dataloader, loss_fn, device):
             loss = loss_fn(yhat, y_batch)
             total_loss += loss.item()
     return total_loss / dataloader.num_batches_per_epoch
+
+def cnn_test_step(model, dataloader, device):
+    model.eval()  # Set the model to evaluation mode
+
+    predictions = []
+    actuals = []
+
+    with torch.no_grad():
+        for _ in range(dataloader.num_batches_per_epoch):
+            batch = dataloader.fetch_batch()
+            x_batch = batch['img_batch'].to(device)
+            y_batch = batch['age_batch'].to(device)
+            yhat = model(x_batch)
+            yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
+            
+            predictions.extend(yhat.detach().cpu().numpy())
+            actuals.extend(y_batch.detach().cpu().numpy())
+    return predictions, actuals
 
 
 
