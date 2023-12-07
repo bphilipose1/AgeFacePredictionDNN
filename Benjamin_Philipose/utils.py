@@ -1,11 +1,7 @@
 from PIL import Image
 import torch
 import numpy as np
-def preprocess_and_save_image(input_path, output_path, new_size=(64, 64)):
-    with Image.open(input_path) as img:
-        img = img.resize(new_size)  # Resize the image to the specified dimensions
-        img = img.convert('L')  # Convert to grayscale
-        img.save(output_path)  # Save the preprocessed image to the specified output path
+
         
 def save_checkpoint(model, optimizer, epoch, filename):
     checkpoint = {
@@ -49,7 +45,7 @@ def cnn_train_step(model, dataloader, loss_fn, optimizer, device):
         loss.backward()
         optimizer.step()
         losses.append(loss.detach().cpu().numpy())
-    return np.mean(losses)
+    return losses
 
 def cnn_val_step(model, dataloader, loss_fn, device):
     model.eval()
@@ -62,7 +58,7 @@ def cnn_val_step(model, dataloader, loss_fn, device):
             yhat = torch.squeeze(model(x_batch), 1)
             loss = loss_fn(yhat, y_batch)
             losses.append(loss.item())
-    return np.mean(losses)
+    return losses
 
 
 def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
@@ -81,8 +77,7 @@ def mmn_train_step(model, dataloader, loss_fn, optimizer, device):
         loss.backward()
         optimizer.step()
         losses.append(loss.item())
-    return np.mean(losses)
-
+    return losses
 def mmn_val_step(model, dataloader, loss_fn, device):
     model.eval()  # Set the model to evaluation mode
     losses = []

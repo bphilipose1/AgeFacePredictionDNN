@@ -13,6 +13,8 @@ class CustomDataloader():
 
     def process_image_numerical(self, img_path):
         with Image.open(img_path) as img:
+            img = img.resize(64,64)  # Resize the image to the specified dimensions
+            img = img.convert('L')  # Convert to grayscale
             img_array = np.asarray(img) / 255.0
             img_array = np.expand_dims(img_array, axis=0)
         return img_array
