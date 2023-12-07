@@ -10,6 +10,7 @@ class CustomDataloader():
         self.batch_size = batch_size
         self.randomize = randomize
         self.num_batches_per_epoch = math.ceil(len(self.dataframe) / self.batch_size)
+        self.x = 0
 
     def process_image_numerical(self, img_path):
         with Image.open(img_path) as img:
@@ -34,8 +35,9 @@ class CustomDataloader():
         self.iter = iter([(i*self.batch_size, (i+1)*self.batch_size) for i in range(self.num_batches_per_epoch)])
 
     def fetch_batch(self):
-        if self.iter is None:
+        if self.iter is None or self.x >= self.num_batches_per_epoch:
             self.generate_iter()
+            self.x = 0
 
         batch_indices = next(self.iter, None)
         if batch_indices is None:
@@ -46,11 +48,10 @@ class CustomDataloader():
         feat_batch = self.dataframe.drop(columns=['filename']).iloc[start_idx:end_idx].to_numpy()
         age_batch = self.age[start_idx:end_idx]
 
-        # Convert numpy arrays to PyTorch tensors
         img_batch = torch.tensor(img_batch, dtype=torch.float32)
         feat_batch = torch.tensor(feat_batch, dtype=torch.float32)
         age_batch = torch.tensor(age_batch, dtype=torch.float32)
+        
+        batch = {'img_batch': img_batch, 'feat_batch': feat_batch, 'age_batch': age_batch, 'batch_idx': start_idx // self.batch_size}
+        return batch
 
-        if batch_indices[1] >= len(self.dataframe):
-            self.generate_iter()  # Reset for the next epoch
-        return {'img_batch': img_batch, 'feat_batch': feat_batch, 'age_batch': age_batch, 'batch_idx': start_idx // self.batch_size}
