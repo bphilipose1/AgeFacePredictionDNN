@@ -1,7 +1,5 @@
 venv/
 tensor_collection/
-preprocessed_images/
 __pycache__/
-*.pth
 data/
 venv2/
