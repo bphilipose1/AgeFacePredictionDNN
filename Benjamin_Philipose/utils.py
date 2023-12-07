@@ -112,3 +112,24 @@ def mmn_val_step(model, dataloader, loss_fn, device):
             total_loss += loss.item()
     return total_loss / dataloader.num_batches_per_epoch
 
+def mmn_test_step(model, dataloader, device):
+    model.eval()  # Set the model to evaluation mode
+
+    predictions = []
+    actuals = []
+
+    with torch.no_grad():
+        for _ in range(dataloader.num_batches_per_epoch):
+            batch = dataloader.fetch_batch()
+            x_batch = batch['img_batch'].to(device)
+            num_features = batch['feat_batch'].to(device)
+            y_batch = batch['age_batch'].to(device)
+
+            yhat = model(x_batch, num_features)
+            yhat = torch.squeeze(yhat, 1)  # Ensure this matches your model output shape
+
+            predictions.extend(yhat.detach().cpu().numpy())
+            actuals.extend(y_batch.detach().cpu().numpy())
+
+    return predictions, actuals
+
