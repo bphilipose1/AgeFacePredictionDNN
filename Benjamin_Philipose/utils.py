@@ -84,7 +84,7 @@ def cnn_test_step(model, dataloader, device):
 
 
 
-#Train, Validation, and Test Step Helper Functions for Multi-Modal Neural Network
+# Train, Validation, and Test Step Helper Functions for Multi-Modal Neural Network
 def mmnn_train_step(model, dataloader, loss_fn, optimizer, device):
     model.train()
     losses_per_iteration = []
