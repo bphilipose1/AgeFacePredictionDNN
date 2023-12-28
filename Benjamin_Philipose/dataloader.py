@@ -14,15 +14,16 @@ class CustomDataloader():
 
     def process_image_numerical(self, img_path):
         with Image.open(img_path) as img:
-            img = img.resize((64,64))  # Resize the image to the specified dimensions
-            img = img.convert('L')  # Convert to grayscale
-            img_array = np.asarray(img) / 255.0
-            img_array = np.expand_dims(img_array, axis=0)
+            img = img.resize((64, 64))  
+            img = img.convert('RGB')  # Ensure the image is in RGB format
+            img_array = np.asarray(img) / 255.0 
         return img_array
 
     def load_batch_images(self, start_idx, end_idx):
         batch_image_paths = self.dataframe['filename'].iloc[start_idx:end_idx]
-        img_batch = np.array([self.process_image_numerical(path) for path in batch_image_paths], dtype=np.float32)
+        img_batch = [self.process_image_numerical(path) for path in batch_image_paths]
+        img_batch = np.array(img_batch, dtype=np.float32)  # Convert list to NumPy array
+        img_batch = np.transpose(img_batch, (0, 3, 1, 2))  # Reorder dimensions to [batch_size, channels, height, width]
         return img_batch
 
     def generate_iter(self):
