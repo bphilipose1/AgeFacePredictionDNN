@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 
 
-#ChatGPT4 helped to get the dimensions right
+
 class CNNRegression(nn.Module):
     def __init__(self):
         super(CNNRegression, self).__init__()
@@ -32,7 +32,7 @@ class CNNRegression(nn.Module):
 
     
     
-#ChatGPT4 helped to get the dimensions right
+
 class MultiModalNetwork(nn.Module):
     def __init__(self, num_numerical_features):
         super(MultiModalNetwork, self).__init__()
