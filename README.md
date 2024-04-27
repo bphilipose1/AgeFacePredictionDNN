@@ -1,4 +1,4 @@
-# MLFinal
+# Age Prediction Neural Network Repository
 #### Developed with Python 3.11.5
 
 ## 1. Navigate to the directory you want to have project in 
