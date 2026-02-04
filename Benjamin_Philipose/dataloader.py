@@ -14,10 +14,11 @@ class CustomDataloader():
 
     def process_image_numerical(self, img_path):
         with Image.open(img_path) as img:
-            img = img.resize((64, 64))  
+            img = img.resize((128, 128), Image.LANCZOS)  # Using a higher resolution and advanced interpolation
             img = img.convert('RGB')  # Ensure the image is in RGB format
             img_array = np.asarray(img) / 255.0 
         return img_array
+
 
     def load_batch_images(self, start_idx, end_idx):
         batch_image_paths = self.dataframe['filename'].iloc[start_idx:end_idx]

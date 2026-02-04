@@ -1,3 +1,5 @@
+
+Benjamin_Philipose/__pycache__/
+Benjamin_Philipose/cnn_model/losses/
+Benjamin_Philipose/data/post_processed_data/
 venv/
-tensor_collection/
-__pycache__/
